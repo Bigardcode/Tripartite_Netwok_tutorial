@@ -10,9 +10,8 @@
 
 
 
-- ** Step  A. Set directory **                             
-
-- Get the current working directory, make sure that it is writable, otherwise, change to a new directory
+--- Step  A. Set directory                             
+   Get the current working directory, make sure that it is writable, otherwise, change to a new directory
 
         getwd()   #shows the directory where R is currently looking for files and saving files to
 
