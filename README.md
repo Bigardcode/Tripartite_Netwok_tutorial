@@ -9,22 +9,15 @@
 
 
 
-#===============================================================================#
-#                    #Step  A. Set directory                                    #  
-#===============================================================================#
 
+- ** Step  A. Set directory **                             
 
-# Get the current working directory, make sure that it is 
-# writable, otherwise, change to a new directory
+- Get the current working directory, make sure that it is writable, otherwise, change to a new directory
 
-        getwd()   # shows the directory where R is currently looking for files and saving files to
+        getwd()   #shows the directory where R is currently looking for files and saving files to
 
-        #setwd(working Directory)
-        setwd("D:/Biard_All_course/ceRNA_Course/ceRNA_Net_Material_Datasets&Codes")
+        setwd("D:/Biard_All_course/ceRNA_Course/ceRNA_Net_Material_Datasets&Codes")   #setwd(working Directory)
 
-         ##Return file and folder names to console
-         dir() 
+         Return file and folder names to console  dir() 
+         
 
-#===============================================================================#
-#                  Step  B. CeRNA Network package installation                  #  
-#===============================================================================#
