@@ -47,8 +47,7 @@
         BiocManager::install(c("remotes"))
 
 
-#+...+...+...+...+++++++++++++++++++++++++++++++++++++++++++...+...+...+...+...+#
-#                      #Get DEGs from CRC  mRNA  datasets#                      #                                 
+### Get DEGs from CRC  mRNA  datasets                                                      
 
 - Step 1. Retrieval GEO datasets(mRNA datasets) from GEO database         
 
