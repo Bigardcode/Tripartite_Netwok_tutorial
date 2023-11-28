@@ -5,7 +5,7 @@
 
 
 
-## Tripartite ceRNA Netwok tutorial
+# Tripartite ceRNA Netwok tutorial
 
 
 - Step  A. Set directory                             
@@ -47,7 +47,7 @@
         BiocManager::install(c("remotes"))
 
 
-# Get DEGs from CRC  mRNA  datasets                                                      
+## Get DEGs from CRC  mRNA  datasets                                                      
 
 - Step 1. Retrieval GEO datasets(mRNA datasets) from GEO database         
 
