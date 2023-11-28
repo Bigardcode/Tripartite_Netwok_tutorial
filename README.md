@@ -47,3 +47,20 @@
         BiocManager::install(c("remotes"))
 
 
+#+...+...+...+...+++++++++++++++++++++++++++++++++++++++++++...+...+...+...+...+#
+#                      #Get DEGs from CRC  mRNA  datasets#                      #                                 
+
+- Step 1. Retrieval GEO datasets(mRNA datasets) from GEO database         
+
+- Step 2. load datasets into a table   
+              
+         #Read the data table
+        GSE138202 = as.matrix(read.table("GSE138202_mRNA.txt"))
+
+        View(GSE138202)
+        dim(GSE138202)
+        head(GSE138202, 2)
+        tail(GSE138202)
+        class(GSE138202)
+        mode(GSE138202)
+
