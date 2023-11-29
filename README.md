@@ -47,7 +47,7 @@
         BiocManager::install(c("remotes"))
 
 
-## Get DEGs from CRC  mRNA  datasets                                                      
+- Step C; Get DEGs from CRC  mRNA  datasets                                                      
 
 - Step 1. Retrieval GEO datasets(mRNA datasets) from GEO database         
 
@@ -62,4 +62,21 @@
         tail(GSE138202)
         class(GSE138202)
         mode(GSE138202)
+
+
+
+
+- Step D; Investigating the normalization  of the datasets
+
+          #Check the Normalization
+          barplot(GSE138202[1:100,])
+          boxplot((GSE138202[1:100,]))
+
+         #log transformation
+         logGSE138202 <- log2(GSE138202 + 1)
+
+
+         barplot(logGSE138202[1:100,])
+         boxplot((logGSE138202[1:100,]))
+
 
