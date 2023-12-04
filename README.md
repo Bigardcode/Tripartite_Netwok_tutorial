@@ -158,70 +158,41 @@
        write.csv(mRNAdif , "mRNAdif.csv" , row.names = T)
 
 
-#+...+...+...+...+++++++++++++++++++++++++++++++++++++++++++...+...+...+...+...+#
-#             #Get DEGs from CRC MiRNA (DEMiRNA) datasets#                      #                          
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-
-#===============================================================================#
-#                         #Step 1. set directory                                #  
-#===============================================================================#
-
-setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
-options(stringsAsFactors=F)
-#setwd()
-getwd() # shows the directory where R is currently looking for files and saving files to
-dir()
-# You can change the working directory
+## Get DEGs from CRC MiRNA (DEMiRNA) datasets#                    
+            #Step 1. set directory
+            setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
+            options(stringsAsFactors=F)
+            #setwd()
+            getwd() # shows the directory where R is currently looking for files and saving files to
+            dir() # You can change the working directory
 
 
+     #Step 2. Retrieval GEO datasets from GEO database                     
+     GSE130084_miRNANA
+     #Step 3. #loading gene expression matrix into a table                   
+     #MiRNA
+     GSE130084 = as.matrix(read.table("GSE130084_miRNA.txt")
+     view(GSE130084)
+     dim(GSE130084)
+     head(GSE130084)
+     tail(GSE130084)
+     class(GSE130084)
+     mode(GSE130084)
 
-#===============================================================================#
-#      #Step 2. Retrieval GEO datasets from GEO database                        #  
-#===============================================================================#
+     #Step 4. #Investigating the normalization  of the data                   #  
 
-GSE130084_miRNANA
+      barplot(GSE130084)
+      boxplot(GSE130084[1:30,])
 
-#===============================================================================#
-#      #Step 3. #loading gene expression matrix into a table                    #  
-#===============================================================================#
+   #Log transformation
+    logGSE130084 <- log2(GSE130084 + 1)
+    barplot(logGSE130084)
+    boxplot(logGSE130084)
 
-#MiRNA
-GSE130084 = as.matrix(read.table("GSE130084_miRNA.txt"))
-
-view(GSE130084)
-
-dim(GSE130084)
-head(GSE130084)
-tail(GSE130084)
-class(GSE130084)
-mode(GSE130084)
-
-#===============================================================================#
-#      #Step 4. #Investigating the normalization  of the data                   #  
-#===============================================================================#
-
-barplot(GSE130084)
-boxplot(GSE130084[1:30,])
-
-#Log transformation
-logGSE130084 <- log2(GSE130084 + 1)
-
-barplot(logGSE130084)
-boxplot(logGSE130084)
-
-
-#==============================================================================#
-#                       #Step 5. #Creating the group of sample                 #
-#==============================================================================#
-
-
-library(DESeq2)
-
-
-
-group = factor(c( rep("Tumor", 2), rep("Normal", 2)))
-head(group)
-
+#Step 5. #Creating the group of sample               
+        library(DESeq2)
+        group = factor(c( rep("Tumor", 2), rep("Normal", 2)))
+        head(group)
 
 ##Create a coldata frame and instantiate the DESeqDataSet. See ?DESeqDataSetFromMatrix
 
@@ -229,64 +200,47 @@ colData <- data.frame(group=group, type="paired-end")
 colData
 head(colData)
 
-
 #Construct DESEQDataSet Object
 #With the count matrix, cts, and the sample information, coldata, we can construct a DESeqDataSet:
 cds <- DESeqDataSetFromMatrix(GSE130084, colData, design = ~group)
 
-
-
-
 # set control condition as reference
-cds$group <- relevel(cds$group, ref = "Normal")
+        cds$group <- relevel(cds$group, ref = "Normal")
 
-#==============================================================================#
-#                       #Step 5. #Normalization with DESeq2                     #
-#==============================================================================#
+ 
+ #Step 5. #Normalization with DESeq2                 
+         cds <- DESeq(cds)
 
+##  see all comparisons (here there is only one
+           resultsNames(cds)
+           res <- results(cds)
+           res = as.data.frame(res)
+           summary(res)
+           dim(res)
+           mcols(res, use.names=TRUE)
 
-cds <- DESeq(cds)
-
-#  see all comparisons (here there is only one
-resultsNames(cds)
-
-
-res <- results(cds)
-res = as.data.frame(res)
-summary(res)
-dim(res)
-
-mcols(res, use.names=TRUE)
+##  Step 6. Differential expression analysis of mRNA (DEmRNA)           
 
 
+         summary(results(cds, alpha=0.05))
+         dif <- results(cds, pAdjustMethod = "BH", alpha = 0.05)
+         dif$padj <- p.adjust(dif$pvalue, method="BH")
+         di <- dif[order(dif$padj),]
+         dim(dif)
+         miRNAdif =  as.data.frame(dif)
+         dim(miRNAdif)
+
+        MiRNAdown = subset(miRNAdif, log2FoldChange < - 0.5 & pvalue< 0.05)
+        MiRNAup = subset(miRNAdif, log2FoldChange > 0.5 & pvalue< 0.05)
+        nrow(MiRNAdown)
+        nrow(MiRNAup)
 
 
-#===============================================================================#
-#         #Step 6. Differential expression analysis of mRNA (DEmRNA)             #
-#===============================================================================#
+        MiRNAup = as.data.frame(MiRNAup)
+        MiRNAdown= as.data.frame(MiRNAdown)
 
-
-summary(results(cds, alpha=0.05))
-
-
-dif <- results(cds, pAdjustMethod = "BH", alpha = 0.05)
-dif$padj <- p.adjust(dif$pvalue, method="BH")
-di <- dif[order(dif$padj),]
-dim(dif)
-miRNAdif =  as.data.frame(dif)
-dim(miRNAdif)
-
-MiRNAdown = subset(miRNAdif, log2FoldChange < - 0.5 & pvalue< 0.05)
-MiRNAup = subset(miRNAdif, log2FoldChange > 0.5 & pvalue< 0.05)
-nrow(MiRNAdown)
-nrow(MiRNAup)
-
-
-MiRNAup = as.data.frame(MiRNAup)
-MiRNAdown= as.data.frame(MiRNAdown)
-
-MiRNAUp = rownames(MiRNAup)
-MiRNADown = rownames(MiRNAdown)
+        MiRNAUp = rownames(MiRNAup)
+        MiRNADown = rownames(MiRNAdown)
 
 
 #===============================================================================#
