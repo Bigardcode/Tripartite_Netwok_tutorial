@@ -308,7 +308,7 @@
           #With the count matrix, cts, and the sample information, coldata, we can construct a DESeqDataSet:
            cds <- DESeqDataSetFromMatrix(GSE104836, colData, design = ~group)
 
--step z.  converting counts to integer mode
+- step z.  converting counts to integer mode
          cds
 
          ## Step 5. #Normalization with Deseq2                      
@@ -323,161 +323,161 @@
           summary(res)
          dim(res)
 
-## Using DEseq2 built in method
+- step aa.  Using DEseq2 built in method
 
-normalized_counts <- counts(cds, normalized=T)
-cntadolog <- log2(1+counts(cds, normalized=T))
+         normalized_counts <- counts(cds, normalized=T)
+         cntadolog <- log2(1+counts(cds, normalized=T))
 
-head(normalized_counts)
+         head(normalized_counts)
 
-boxplot(normalized_counts)
-boxplot(cntadolog)
+         boxplot(normalized_counts)
+         boxplot(cntadolog)
 
-## Step 6. Differential expression analysis of mRNA (DEmRNA)          
+- step BB.  Differential expression analysis of mRNA (DEmRNA)          
 
-summary(results(cds, alpha=0.05))
+        summary(results(cds, alpha=0.05))
 
-dif <- results(cds, pAdjustMethod = "BH", alpha = 0.05)
-dif$padj <- p.adjust(dif$pvalue, method="BH")
-dif <- dif[order(dif$padj),]
-dim(dif)
-lncdif1 =  as.data.frame(dif)
-dim(lncdif1)
+        dif <- results(cds, pAdjustMethod = "BH", alpha = 0.05)
+        dif$padj <- p.adjust(dif$pvalue, method="BH")
+        dif <- dif[order(dif$padj),]
+        dim(dif)
+        lncdif1 =  as.data.frame(dif)
+        dim(lncdif1)
 
-lncdown = subset(lncdif1, log2FoldChange < - 0.5 & padj< 0.05)
-lncup = subset(lncdif1, log2FoldChange > 0.5 & padj< 0.05)
-nrow(lncup)
-nrow(lncdown)
-
-
-lncup = as.data.frame(lncdown)
-lncdown= as.data.frame(lncdown)
-
-lncUp = rownames(lncup)
-lncDown = rownames(lncdown)
+         lncdown = subset(lncdif1, log2FoldChange < - 0.5 & padj< 0.05)
+         lncup = subset(lncdif1, log2FoldChange > 0.5 & padj< 0.05)
+         nrow(lncup)
+         nrow(lncdown)
 
 
-## Step 7. Save the DEGs                              
+        lncup = as.data.frame(lncdown)
+        lncdown= as.data.frame(lncdown)
 
-##export a dataframe or matrix to a csv file
-
-write.csv(lncup,"lncup.csv", row.names=T)
-write.csv(lncdown,"lncdown.csv", row.names=T)
-write.csv(lncdif,"lncdif.csv", row.names=T)
-
-## Exploring interaction between lncRNA-miRNA  & miRNA-mRNA               
-
-- Step 1. loading mRNAlist,mirlist,lnclist                 
-setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
-
-#mRNAlist
-genelist = read.table("genelist.txt")
-
-dim(genelist)
-head(genelist)
-genelist = genelist[,1]
-class(geneList)
-head(genelist)
-
-#mirlist
-mirlist = read.table("mirlist.txt")
-head(mirlist)
-dim(mirlist)
-mirlist = mirlist[,1]
-class(mirlist)
-head(mirlist)
-
-#lnclist
-lnclist = read.table("lnclist.txt")
-head(lnclist)
-dim(lnclist)
-lnclist = lnclist[,1]
-class(lnclist)
-head(lnclist)
+        lncUp = rownames(lncup)
+        lncDown = rownames(lncdown)
 
 
-## Step 2. Retrieval mir-mRNA through  Mirwalk  
+- step CC. Save the DEGs                              
 
-setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
-#load Mirwalk------------------------------------------------------------------------
-miRWalk <- read.csv("miRWalk.csv", head = TRUE, sep =",", stringsAsFactors=F)
-dim(miRWalk)
-head(miRWalk)
-miRWalk = as.data.frame(miRWalk)
-MirWalk_subset <- subset(miRWalk, subset = genesymbol %in% genelist)
-dim(MirWalk_subset)
-head(MirWalk_subset)
-write.csv(MirWalk_subset,"MirWalk_subset.csv", row.names=T)
+         ##export a dataframe or matrix to a csv file
+
+           write.csv(lncup,"lncup.csv", row.names=T)
+            write.csv(lncdown,"lncdown.csv", row.names=T)
+            write.csv(lncdif,"lncdif.csv", row.names=T)
+
+- step DD. Exploring interaction between lncRNA-miRNA  & miRNA-mRNA               
+
+            #loading mRNAlist,mirlist,lnclist                 
+            setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
+
+             #mRNAlist
+              genelist = read.table("genelist.txt")
+
+             dim(genelist)
+             head(genelist)
+             genelist = genelist[,1]
+             class(geneList)
+             head(genelist)
+
+               #mirlist
+                mirlist = read.table("mirlist.txt")
+                 head(mirlist)
+                  dim(mirlist)
+                 mirlist = mirlist[,1]
+                 class(mirlist)
+                 head(mirlist)
+
+                 #lnclist
+                  lnclist = read.table("lnclist.txt")
+                  head(lnclist)
+                  dim(lnclist)
+                   lnclist = lnclist[,1]
+                  class(lnclist)
+                   head(lnclist)
 
 
-## Step 3. Retrieval miRNA-lncRNA through  miRTarBase                           
+- step EE.  Retrieval mir-mRNA through  Mirwalk  
 
-#load miRTarBase---------------------------------------------------------------------
-setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
-miRTarBase <- read.csv("miRTarBase.csv", head = TRUE, sep =",", stringsAsFactors=F)
-dim(miRTarBase)
-head(miRTarBase)
-miRTarBase = as.data.frame(miRTarBase)
-mirtarbase_subset <- subset(miRTarBase, subset = tarName %in% mirlist)
-dim(mirtarbase_subset)
-head(mirtarbase_subset)
-
-mirtarbase_lncRNA_mirRNA_subset <- subset(mirtarbase_subset, subset = ncName %in% lnclist)
-dim(mirtarbase_lncRNA_mirRNA_subset)
-head(mirtarbase_lncRNA_mirRNA_subset)
-
-mirtarbase_lncRNA_mRNA_subset <- subset(mirtarbase_subset, subset = tarName %in% genelist)
-dim(mirtarbase_lncRNA_mRNA_subset)
-head(mirtarbase_lncRNA_mRNA_subset)
+        setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
+         #load Mirwalk------------------------------------------------------------------------
+          miRWalk <- read.csv("miRWalk.csv", head = TRUE, sep =",", stringsAsFactors=F)
+           dim(miRWalk)
+            head(miRWalk)
+             miRWalk = as.data.frame(miRWalk)
+          MirWalk_subset <- subset(miRWalk, subset = genesymbol %in% genelist)
+            dim(MirWalk_subset)
+             head(MirWalk_subset)
+             write.csv(MirWalk_subset,"MirWalk_subset.csv", row.names=T)
 
 
-write.csv(mirtarbase_subset,"mirtarbase_subset.csv", row.names=T)
-write.csv(mirtarbase_lncRNA_mirRNA_subset,"mirtarbase_lncRNA_mirRNA_subset.csv", row.names=T)
-write.csv(mirtarbase_lncRNA_mRNA_subset,"mirtarbase_lncRNA_mRNA_subset.csv", row.names=T)
+- step FF. Retrieval miRNA-lncRNA through  miRTarBase                           
+
+           #load miRTarBase---------------------------------------------------------------------
+           setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
+            miRTarBase <- read.csv("miRTarBase.csv", head = TRUE, sep =",", stringsAsFactors=F)
+            dim(miRTarBase)
+             head(miRTarBase)
+              miRTarBase = as.data.frame(miRTarBase)
+             mirtarbase_subset <- subset(miRTarBase, subset = tarName %in% mirlist)
+              dim(mirtarbase_subset)
+              head(mirtarbase_subset)
+
+                 mirtarbase_lncRNA_mirRNA_subset <- subset(mirtarbase_subset, subset = ncName %in% lnclist)
+                 dim(mirtarbase_lncRNA_mirRNA_subset)
+                  head(mirtarbase_lncRNA_mirRNA_subset)
+
+                    mirtarbase_lncRNA_mRNA_subset <- subset(mirtarbase_subset, subset = tarName %in% genelist)
+                    dim(mirtarbase_lncRNA_mRNA_subset)
+                   head(mirtarbase_lncRNA_mRNA_subset)
 
 
-## Step 4. Merge LncRNA-MiRNA & MiRNA                           
+             write.csv(mirtarbase_subset,"mirtarbase_subset.csv", row.names=T)
+            write.csv(mirtarbase_lncRNA_mirRNA_subset,"mirtarbase_lncRNA_mirRNA_subset.csv", row.names=T)
+             write.csv(mirtarbase_lncRNA_mRNA_subset,"mirtarbase_lncRNA_mRNA_subset.csv", row.names=T)
 
-#Merge LncRNA-MirRNA & MiRNA----------------------------------------------------------
 
-setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
+- step NN. Merge LncRNA-MiRNA & MiRNA                           
 
-# subset (Mirwalk)
-MiRNA_MRNA = MirWalk_subset[,c("mirnaid","genesymbol")]  # returns a data.frame
-head(MiRNA_MRNA)
-dim(MiRNA_MRNA)
-class(MiRNA_MRNA)
+             #Merge LncRNA-MirRNA & MiRNA----------------------------------------------------------
 
-# Remove duplicate rows
-MiRNA_MRNA <- MiRNA_MRNA[!duplicated(MiRNA_MRNA), ]
-head(MiRNA_MRNA)
-dim(MiRNA_MRNA)
+              setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
 
-# subset (mirtarbase)
-LncRNA_MiRNA = mirtarbase_lncRNA_mirRNA_subset[,c("ncName","tarName")]  # returns a data.frame
-head(LncRNA_MiRNA)
-dim(LncRNA_MiRNA)
-class(LncRNA_MiRNA)
+             # subset (Mirwalk)
+              MiRNA_MRNA = MirWalk_subset[,c("mirnaid","genesymbol")]  # returns a data.frame
+              head(MiRNA_MRNA)
+             dim(MiRNA_MRNA)
+             class(MiRNA_MRNA)
 
-colnames(LncRNA_MiRNA)[2]  <- "mirnaid"    # change column name for x column
+             # Remove duplicate rows
+             MiRNA_MRNA <- MiRNA_MRNA[!duplicated(MiRNA_MRNA), ]
+              head(MiRNA_MRNA)
+              dim(MiRNA_MRNA)
 
-## Step 4. Merge two data frames(LncRNA_MirRNA, LncRNA_MirRNA) by ID                  
+               # subset (mirtarbase)
+               LncRNA_MiRNA = mirtarbase_lncRNA_mirRNA_subset[,c("ncName","tarName")]  # returns a data.frame
+                head(LncRNA_MiRNA)
+                dim(LncRNA_MiRNA)
+                class(LncRNA_MiRNA)
 
-LncRNA_MiRNA_MRNA <- merge(MiRNA_MRNA,LncRNA_MiRNA, by="mirnaid")
-head(LncRNA_MiRNA_MRNA)
-dim(LncRNA_MiRNA_MRNA)
-class(LncRNA_MiRNA_MRNA)
+               colnames(LncRNA_MiRNA)[2]  <- "mirnaid"    # change column name for x column
 
-LncRNA_MiRNA_MRNA = LncRNA_MiRNA_MRNA %>% relocate(ncName, .before=mirnaid)
+- step MM.  Merge two data frames(LncRNA_MirRNA, LncRNA_MirRNA) by ID                  
 
-#Save the results---------------------------------------------------
-write.csv(LncRNA_MiRNA_MRNA,"LncRNA_MiRNA_MRNA.csv", row.names=T)
-write.csv(MiRNA_MRNA,"MiRNA_MRNA.csv", row.names=T)
-write.csv(LncRNA_MiRNA,"LncRNA_MiRNA.csv", row.names=T)
+         LncRNA_MiRNA_MRNA <- merge(MiRNA_MRNA,LncRNA_MiRNA, by="mirnaid")
+         head(LncRNA_MiRNA_MRNA)
+          dim(LncRNA_MiRNA_MRNA)
+         class(LncRNA_MiRNA_MRNA)
 
-## Step 5. investagate the ceRNA network interaction                           
+          LncRNA_MiRNA_MRNA = LncRNA_MiRNA_MRNA %>% relocate(ncName, .before=mirnaid)
 
-view(LncRNA_MiRNA_MRNA)
+          #Save the results---------------------------------------------------
+          write.csv(LncRNA_MiRNA_MRNA,"LncRNA_MiRNA_MRNA.csv", row.names=T)
+          write.csv(MiRNA_MRNA,"MiRNA_MRNA.csv", row.names=T)
+           write.csv(LncRNA_MiRNA,"LncRNA_MiRNA.csv", row.names=T)
+
+- step LL.  investagate the ceRNA network interaction                           
+
+           view(LncRNA_MiRNA_MRNA)
 
 
    
