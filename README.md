@@ -8,12 +8,12 @@
 ### Tripartite ceRNA Netwok tutorial
 
 
-- Step  A. Set directory                             
-   Get the current working directory, make sure that it is writable, otherwise, change to a new directory
-
-        getwd()   #shows the directory where R is currently looking for files and saving files to
-        setwd("D:/Biard_All_course/ceRNA_Course/ceRNA_Net_Material_Datasets&Codes")   #setwd(working Directory)
-        Return file and folder names to console  dir() 
+- Step  A. Set directory  
+                           
+ Get the current working directory, make sure that it is writable, otherwise, change to a new directory
+ getwd()   #shows the directory where R is currently looking for files and saving files to
+ setwd("D:/Biard_All_course/ceRNA_Course/ceRNA_Net_Material_Datasets&Codes")   #setwd(working Directory)
+ Return file and folder names to console  dir() 
          
 - Step  B. CeRNA Network package installation
 
