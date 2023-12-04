@@ -5,6 +5,7 @@
 
 
 
+
 # Tripartite ceRNA Netwok tutorial
 
 
@@ -54,15 +55,15 @@
          #Read the data table
          GSE138202 = as.matrix(read.table("GSE138202_mRNA.txt"))
 
-        View(GSE138202)
-        dim(GSE138202)
-        head(GSE138202, 2)
-        tail(GSE138202)
-        class(GSE138202)
-        mode(GSE138202)
+         View(GSE138202)
+         dim(GSE138202)
+         head(GSE138202, 2)
+         tail(GSE138202)
+         class(GSE138202)
+         mode(GSE138202)
 
 
-- Step D; Investigating the normalization  of the datasets
+- Step D. Investigating the normalization  of the datasets
 
           #Check the Normalization
           barplot(GSE138202[1:100,])
@@ -94,14 +95,14 @@
        #With the count matrix, cts, and the sample information, coldata, we can construct a DESeqDataSet:
        cds <- DESeqDataSetFromMatrix(GSE138202, colData, design = ~group)
 
-  - Step F. #Normalization with DESeq2
+  - Step F. Normalization of gene expression matrix
     
-        ##set control condition as reference
+        #set control condition as reference
         cds$group <- relevel(cds$group, ref = "Normal")
         cds <- DESeq(cds)
         resultsNames(cds)
         #results table
-         res <- results(cds)
+        res <- results(cds)
 
          #let's look at the results table
           head(results(cds, tidy=TRUE)) 
@@ -111,8 +112,8 @@
            summary(res)
            dim(res)
            class(res)
- - Step 6. Differential expression analysis of mRNA (DEmRNA)          
-
+    
+ - Step G. Differential expression analysis of mRNA (DEmRNA)          
 
         #Get DEGs
         dif <- results(cds, pAdjustMethod = "BH", alpha = 0.001)
@@ -135,7 +136,7 @@
         mRNAUp = rownames(mRNAup)
         mRNADown = rownames(mRNAdown)
 
-- Step 7. volcano plot
+- Step H. volcano plot
   
         res = as.data.frame(res)
         dim(res)
@@ -150,15 +151,16 @@
           labSize = 1.8,  title = '', subtitle = "", legendPosition = 'bottom', col = c("grey50", "darkred",  "orange", "lawngreen")) 
           dev.off()
 
-- Step 8. Save the DEGs
-        export a dataframe or matrix to a csv file
-
+- Step I. Save the DEGs
+ 
+        #export a dataframe or matrix to a csv file
         write.csv(mRNAup , "mRNAnup.csv" , row.names = T)
         write.csv(mRNAdown , "mRNAdown.csv" , row.names = T)
-       write.csv(mRNAdif , "mRNAdif.csv" , row.names = T)
+        write.csv(mRNAdif , "mRNAdif.csv" , row.names = T)
 
 
-## Get DEGs from CRC MiRNA (DEMiRNA) datasets#                    
+- Step j. Get DEGs from CRC MiRNA (DEMiRNA) datasets
+               
             #Step 1. set directory
             setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
             options(stringsAsFactors=F)
@@ -167,7 +169,8 @@
             dir() # You can change the working directory
 
 
-     #Step 2. Retrieval GEO datasets from GEO database                     
+- step K.  Retrieval GEO datasets from GEO database
+                     
      GSE130084_miRNANA
      #Step 3. #loading gene expression matrix into a table                   
      #MiRNA
@@ -179,39 +182,36 @@
      class(GSE130084)
      mode(GSE130084)
 
-## Step 4. #Investigating the normalization  of the data             
+- Step L. #Investigating the normalization  of the data             
 
       barplot(GSE130084)
       boxplot(GSE130084[1:30,])
+      #Log transformation
+      logGSE130084 <- log2(GSE130084 + 1)
+      barplot(logGSE130084)
+      boxplot(logGSE130084)
 
-   #Log transformation
-    logGSE130084 <- log2(GSE130084 + 1)
-    barplot(logGSE130084)
-    boxplot(logGSE130084)
-
-#Step 5. #Creating the group of sample               
+- Step M. #Creating the group of sample               
         library(DESeq2)
         group = factor(c( rep("Tumor", 2), rep("Normal", 2)))
         head(group)
 
-##Create a coldata frame and instantiate the DESeqDataSet. See ?DESeqDataSetFromMatrix
+- step N. Create a coldata frame and instantiate the DESeqDataSet. See ?DESeqDataSetFromMatrix
 
-colData <- data.frame(group=group, type="paired-end")
-colData
-head(colData)
+        colData <- data.frame(group=group, type="paired-end")
+        colData
+        head(colData)
 
-#Construct DESEQDataSet Object
-#With the count matrix, cts, and the sample information, coldata, we can construct a DESeqDataSet:
-cds <- DESeqDataSetFromMatrix(GSE130084, colData, design = ~group)
+- Step O. Construct DESEQDataSet Object
+        #With the count matrix, cts, and the sample information, coldata, we can construct a DESeqDataSet:
+        cds <- DESeqDataSetFromMatrix(GSE130084, colData, design = ~group)
 
-# set control condition as reference
+- Step P. set control condition as reference
         cds$group <- relevel(cds$group, ref = "Normal")
-
- 
- #Step 5. #Normalization with DESeq2                 
+        #Normalization with DESeq2                 
          cds <- DESeq(cds)
 
-##  see all comparisons (here there is only one
+- Step Q. see all comparisons (here there is only one
            resultsNames(cds)
            res <- results(cds)
            res = as.data.frame(res)
@@ -219,7 +219,7 @@ cds <- DESeqDataSetFromMatrix(GSE130084, colData, design = ~group)
            dim(res)
            mcols(res, use.names=TRUE)
 
-##  Step 6. Differential expression analysis of mRNA (DEmRNA)           
+- Step R. Differential expression analysis of mRNA (DEmRNA)           
 
 
          summary(results(cds, alpha=0.05))
@@ -243,88 +243,85 @@ cds <- DESeqDataSetFromMatrix(GSE130084, colData, design = ~group)
         MiRNADown = rownames(MiRNAdown)
 
 
-## Step 7. Save the DEGs                                    
+- step S.  Save the DEGs                                    
 
-##export a dataframe or matrix to a csv file
-write.csv(MiRNAup , "MiRNAup.csv" , row.names = T)
-write.csv(MiRNAdown , "MiRNAdown.csv", row.names = T)
-write.csv(miRNAdif , "miRNAdif.csv", row.names = T)
+        ##export a dataframe or matrix to a csv file
+        write.csv(MiRNAup , "MiRNAup.csv" , row.names = T)
+        write.csv(MiRNAdown , "MiRNAdown.csv", row.names = T)
+        write.csv(miRNAdif , "miRNAdif.csv", row.names = T)
 
-## Get DEGs from lncRNA CRC  datasets#                    
+- step T.  Get DEGs from lncRNA CRC  datasets#                    
 
-- Step 1. Set directory                             
-setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
-options(stringsAsFactors=F)
-#setwd()
-getwd() # shows the directory where R is currently looking for files and saving files to
-dir()
-
-
-## You can change the working directory
+        #Set directory                             
+        setwd("D:/BigardCode/ceRNA_course/CRC_ceRNA")
+        options(stringsAsFactors=F)
+        #setwd()
+        getwd() # shows the directory where R is currently looking for files and saving files to
+        dir() #You can change the working directory
 
 - Step 2. Retrieval LncRNA datasets from GEO database                    
 
-## Import the data and look at the first six rows
+- step U. Import the data and look at the first six rows
 
-GSE1048361 <- read.csv(file = 'GSE104836_LncRNA.csv')
-GSE104836 = as.matrix(GSE1048361[,-1])
-rownames(GSE104836) <- GSE1048361[,1]
-GSE104836 = as.data.frame(GSE104836)
-dim(GSE104836)
-class(GSE104836)
-mode(GSE104836)
-head(GSE104836)
-tail(GSE104836)
-
-
-GSE104836 = as.numeric(GSE104836)
-na.omit(GSE104836)
+        GSE1048361 <- read.csv(file = 'GSE104836_LncRNA.csv')
+         GSE104836 = as.matrix(GSE1048361[,-1])
+         rownames(GSE104836) <- GSE1048361[,1]
+         GSE104836 = as.data.frame(GSE104836)
+         dim(GSE104836)
+         class(GSE104836)
+          mode(GSE104836)
+          head(GSE104836)
+          tail(GSE104836)
 
 
-## Step 3. #Investigating the normalization  of the data                  
-
-barplot(GSE104836[1:100,])
-boxplot(GSE104836[1:100,])
-
-#Log transformation
-logGSE104836 <- log2(GSE104836 + 1)
-
-barplot(logGSE104836[1:100,])
-boxplot(logGSE104836[1:100,])
-
-## Step 4. #Creating the group of samples              
-
-#Creating the group of samples
-library(ggplot2)
-library(DESeq2)
-vignette("DESeq2")
-group = factor(c(rep("Tumor", 10), rep("Normal", 10)))
-head(group)
+          GSE104836 = as.numeric(GSE104836)
+         na.omit(GSE104836)
 
 
-## Create a coldata frame and instantiate the DESeqDataSet. See ?DESeqDataSetFromMatrix
+- Step V. #Investigating the normalization  of the data                  
 
-colData <- data.frame(group=group, type="paired-end")
-colData
-head(colData)
-#Construct DESEQDataSet Object
-#With the count matrix, cts, and the sample information, coldata, we can construct a DESeqDataSet:
-cds <- DESeqDataSetFromMatrix(GSE104836, colData, design = ~group)
+        barplot(GSE104836[1:100,])
+        boxplot(GSE104836[1:100,])
 
-## converting counts to integer mode
-cds
+        #Log transformation
+        logGSE104836 <- log2(GSE104836 + 1)
 
-## Step 5. #Normalization with Deseq2                      
-# set control condition as reference
-cds$group <- relevel(cds$group, ref = "Normal")
-?DESeqDataSetFromMatrix
+        barplot(logGSE104836[1:100,])
+        boxplot(logGSE104836[1:100,])
 
-cds <- DESeq(cds)
-resultsNames(cds)
-res <- results(cds)
-res = as.data.frame(res)
-summary(res)
-dim(res)
+- step W. Creating the group of samples              
+
+         #Creating the group of samples
+          library(ggplot2)
+         library(DESeq2)
+         vignette("DESeq2")
+         group = factor(c(rep("Tumor", 10), rep("Normal", 10)))
+         head(group)
+
+
+- step Y. Create a coldata frame and instantiate the DESeqDataSet. See ?DESeqDataSetFromMatrix
+
+          colData <- data.frame(group=group, type="paired-end")
+          colData
+           head(colData)
+           #Construct DESEQDataSet Object
+          #With the count matrix, cts, and the sample information, coldata, we can construct a DESeqDataSet:
+           cds <- DESeqDataSetFromMatrix(GSE104836, colData, design = ~group)
+
+-step z.  converting counts to integer mode
+         cds
+
+         ## Step 5. #Normalization with Deseq2                      
+         # set control condition as reference
+         cds$group <- relevel(cds$group, ref = "Normal")
+        ?DESeqDataSetFromMatrix
+
+         cds <- DESeq(cds)
+          resultsNames(cds)
+         res <- results(cds)
+          res = as.data.frame(res)
+          summary(res)
+         dim(res)
 
 ## Using DEseq2 built in method
 
